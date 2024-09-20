@@ -10,7 +10,6 @@ public record AccountResponse(
         Double balance,
         AccountType accountType,
         LocalDateTime createDate
-
 )
   {
   }

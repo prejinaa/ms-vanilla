@@ -23,17 +23,15 @@ public class AccountService {
     public AccountResponse createAccount(AccountCreationRequest creationRequest) {
         log.info("Received request to create account for Merchant ID: {} and Customer ID: {}",
                 creationRequest.merchantId(), creationRequest.customerId());
-
         Account account = new Account();
         account.setAccountNumber(creationRequest.accountNumber());
         account.setAccountType(creationRequest.accountType());
         account.setBalance(creationRequest.balance());
         account.setMerchantId(creationRequest.merchantId());
         account.setCustomerId(creationRequest.customerId());
-
         Account savedAccount = accountRepository.save(account);
-        log.info("Account created successfully with Account ID: {}", savedAccount.getAccountId());
 
+        log.info("Account created successfully with Account ID: {}", savedAccount.getAccountId());
         return new AccountResponse(
                 savedAccount.getAccountId(),
                 savedAccount.getAccountNumber(),
@@ -45,13 +43,11 @@ public class AccountService {
 
     public AccountResponse getAccountById(Long accountId) {
         log.info("Fetching account details for Account ID: {}", accountId);
-
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> {
                     log.error("Account not found with ID: {}", accountId);
                     return new RuntimeException("Account with this ID not found");
                 });
-
         log.info("Returning account details for Account ID: {}", accountId);
         return new AccountResponse(
                 account.getAccountId(),
@@ -64,13 +60,12 @@ public class AccountService {
 
     public List<AccountResponse> getAccountByMerchantId(Long merchantId) throws MerchantNotFoundException {
         log.info("Fetching accounts for Merchant ID: {}", merchantId);
-
         List<Account> accounts = accountRepository.findByMerchantId(merchantId);
+
         if (accounts.isEmpty()) {
             log.error("No accounts found for Merchant ID: {}", merchantId);
             throw new MerchantNotFoundException(merchantId);
         }
-
         log.info("Returning {} accounts for Merchant ID: {}", accounts.size(), merchantId);
         return accounts.stream()
                 .map(a -> new AccountResponse(
@@ -84,13 +79,12 @@ public class AccountService {
 
     public List<AccountResponse> getAccountByCustomerById(Long customerId) throws CustomerNotFoundException {
         log.info("Fetching accounts for Customer ID: {}", customerId);
-
         List<Account> accounts = accountRepository.findByCustomerId(customerId);
+
         if (accounts.isEmpty()) {
             log.error("No accounts found for Customer ID: {}", customerId);
             throw new CustomerNotFoundException(customerId);
         }
-
         log.info("Returning {} accounts for Customer ID: {}", accounts.size(), customerId);
         return accounts.stream()
                 .map(account -> new AccountResponse(
@@ -104,12 +98,10 @@ public class AccountService {
 
     public void deleteAccount(Long accountId) {
         log.info("Received request to delete account with Account ID: {}", accountId);
-
         if (!accountRepository.existsById(accountId)) {
             log.error("Account not found with ID: {}", accountId);
             throw new RuntimeException("Account not found");
         }
-
         accountRepository.deleteById(accountId);
         log.info("Account with ID: {} deleted successfully", accountId);
     }
