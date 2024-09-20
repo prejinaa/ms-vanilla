@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User   {
+
     @Id
     @GeneratedValue
     private Integer id;
