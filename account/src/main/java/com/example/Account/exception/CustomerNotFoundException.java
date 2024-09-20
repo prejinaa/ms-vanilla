@@ -1,5 +1,4 @@
 package com.example.Account.exception;
-
 import lombok.Getter;
 
 @Getter

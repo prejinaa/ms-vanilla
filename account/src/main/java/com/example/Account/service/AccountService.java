@@ -1,5 +1,4 @@
 package com.example.Account.service;
-
 import com.example.Account.dto.AccountCreationRequest;
 import com.example.Account.dto.AccountResponse;
 import com.example.Account.exception.CustomerNotFoundException;
@@ -9,7 +8,6 @@ import com.example.Account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j; // Importing the logger
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
