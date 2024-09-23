@@ -72,7 +72,7 @@ public class AuthenticationService {
 
     public List<MerchantResponse> MerchantController() {
         return webClient.get()
-                .uri("http://localhost:8084/api/merchant}") // Use the placeholder directly in the uri
+                .uri("http://localhost:8084/api/merchant}")
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<MerchantResponse>>() {})
                 .onErrorResume(e -> {

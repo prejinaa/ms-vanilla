@@ -25,8 +25,8 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/user/merchants/**").permitAll()
-                .requestMatchers("/api/user/**").permitAll()// Public access for authentication
-                .requestMatchers("/api/user/customers/**").hasAnyRole("MERCHANT", "USER") // Allow both MERCHANT and USER roles
+                .requestMatchers("/api/user/**").permitAll()
+                .requestMatchers("/api/user/customers/**").hasAnyRole("MERCHANT", "USER")
                 .anyRequest().authenticated() // Other requests need authentication
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
