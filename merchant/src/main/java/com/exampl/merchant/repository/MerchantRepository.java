@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface MerchantRepository extends JpaRepository<Merchant,Long> {
 
-    @Query("SELECT m FROM Merchant m WHERE m.userId = :userId")
-    List<Merchant> findByUserId(Long userId);
     List<MerchantResponse>findAllBy();
 
 

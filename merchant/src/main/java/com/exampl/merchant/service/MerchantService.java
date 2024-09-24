@@ -38,7 +38,7 @@ public class MerchantService {
         merchant.setBusinessAddress(merchantRequest.businessAddress());
         merchant.setContactNumber(merchantRequest.contactNumber());
         merchant.setEmail(merchantRequest.email());
-        merchant.setUserId(merchantRequest.userId());
+
 
         Merchant savedMerchant = merchantRepository.save(merchant);
         log.info("Merchant created with ID: {}", savedMerchant.getMerchantId());
@@ -49,9 +49,11 @@ public class MerchantService {
                 savedMerchant.getBusinessAddress(),
                 savedMerchant.getContactNumber(),
                 savedMerchant.getEmail(),
-                savedMerchant.getUserId(),
+
                 savedMerchant.getCreateDate(),
-                savedMerchant.getLastModified()
+                savedMerchant.getLastModified(),
+                savedMerchant.getCreatedBy(),
+                savedMerchant.getLastModifiedBy()
         );
     }
 
@@ -81,9 +83,11 @@ public class MerchantService {
                 merchant.getBusinessAddress(),
                 merchant.getContactNumber(),
                 merchant.getEmail(),
-                merchant.getUserId(),
+
                 merchant.getCreateDate(),
                 merchant.getLastModified(),
+                merchant.getCreatedBy(),
+                merchant.getLastModifiedBy(),
                 accountResponse
         );
     }
@@ -100,7 +104,7 @@ public class MerchantService {
         merchant.setBusinessAddress(merchantRequest.businessAddress());
         merchant.setContactNumber(merchantRequest.contactNumber());
         merchant.setEmail(merchantRequest.email());
-        merchant.setUserId(merchantRequest.userId());
+
 
         Merchant updatedMerchant = merchantRepository.save(merchant);
         log.info("Merchant updated with ID: {}", updatedMerchant.getMerchantId());
@@ -111,48 +115,51 @@ public class MerchantService {
                 updatedMerchant.getBusinessAddress(),
                 updatedMerchant.getContactNumber(),
                 updatedMerchant.getEmail(),
-                updatedMerchant.getUserId(),
                 updatedMerchant.getCreateDate(),
-                updatedMerchant.getLastModified()
+                updatedMerchant.getLastModified(),
+                updatedMerchant.getCreatedBy(),
+                updatedMerchant.getLastModifiedBy()
         );
     }
 
-    public List<MerchantWithAccountResponse> getMerchantByUserID(Long userId) {
-        log.info("Fetching merchants for user ID: {}", userId);
-        List<Merchant> merchants = merchantRepository.findByUserId(userId);
-
-        if (merchants.isEmpty()) {
-            log.error("No merchants found for user ID: {}", userId);
-            throw new RuntimeException("No merchants found for userId: " + userId);
-        }
-
-        return merchants.stream()
-                .map(merchant -> {
-                    log.info("Fetching accounts for merchant ID: {}", merchant.getMerchantId());
-                    List<AccountResponse> accountResponses = webClient.get()
-                            .uri("http://localhost:8083/api/accounts/merchant/" + merchant.getMerchantId())
-                            .retrieve()
-                            .bodyToMono(new ParameterizedTypeReference<List<AccountResponse>>() {})
-                            .onErrorResume(e -> {
-                                log.error("Error fetching accounts for merchant ID: {}: {}", merchant.getMerchantId(), e.getMessage());
-                                return Mono.empty();
-                            })
-                            .block();
-
-                    return new MerchantWithAccountResponse(
-                            merchant.getMerchantId(),
-                            merchant.getBusinessName(),
-                            merchant.getBusinessAddress(),
-                            merchant.getContactNumber(),
-                            merchant.getEmail(),
-                            merchant.getUserId(),
-                            merchant.getCreateDate(),
-                            merchant.getLastModified(),
-                            accountResponses
-                    );
-                })
-                .collect(Collectors.toList());
-    }
+//    public List<MerchantWithAccountResponse> getMerchantByUserID(Long userId) {
+//        log.info("Fetching merchants for user ID: {}", userId);
+//        List<Merchant> merchants = merchantRepository.findByUserId(userId);
+//
+//        if (merchants.isEmpty()) {
+//            log.error("No merchants found for user ID: {}", userId);
+//            throw new RuntimeException("No merchants found for userId: " + userId);
+//        }
+//
+//        return merchants.stream()
+//                .map(merchant -> {
+//                    log.info("Fetching accounts for merchant ID: {}", merchant.getMerchantId());
+//                    List<AccountResponse> accountResponses = webClient.get()
+//                            .uri("http://localhost:8083/api/accounts/merchant/" + merchant.getMerchantId())
+//                            .retrieve()
+//                            .bodyToMono(new ParameterizedTypeReference<List<AccountResponse>>() {})
+//                            .onErrorResume(e -> {
+//                                log.error("Error fetching accounts for merchant ID: {}: {}", merchant.getMerchantId(), e.getMessage());
+//                                return Mono.empty();
+//                            })
+//                            .block();
+//
+//                    return new MerchantWithAccountResponse(
+//                            merchant.getMerchantId(),
+//                            merchant.getBusinessName(),
+//                            merchant.getBusinessAddress(),
+//                            merchant.getContactNumber(),
+//                            merchant.getEmail(),
+//                            merchant.getUserId(),
+//                            merchant.getCreateDate(),
+//                            merchant.getLastModified(),
+//                            merchant.getCreatedBy(),
+//                            merchant.getLastModifiedBy(),
+//                            accountResponses
+//                    );
+//                })
+//                .collect(Collectors.toList());
+//    }
     public void deleteMerchant(Long merchantId){
         log.info("Received request to delete Merchant with Merchant ID: {}", merchantId);
 
@@ -164,5 +171,6 @@ public class MerchantService {
         merchantRepository.deleteById(merchantId);
         log.info("Merchant with ID: {} deleted successfully", merchantId);
     }
+
 }
 

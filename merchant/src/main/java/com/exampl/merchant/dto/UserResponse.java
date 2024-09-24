@@ -1,2 +1,4 @@
-package com.exampl.merchant.dto;public class UserResponse {
+package com.exampl.merchant.dto;
+
+public record UserResponse(Long id,String username) {
 }

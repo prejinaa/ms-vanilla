@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record MerchantRequest(
-
         @NotBlank(message = "Business Name must be provided")
         @Size(max = 100, message = "Business Name must not exceed 100 characters")
         String businessName,
@@ -18,13 +17,10 @@ public record MerchantRequest(
 
         @NotNull(message = "Contact Number must be provided")
         @Pattern(regexp = "^\\d{10}$", message = "Contact Number must be a 10-digit number")
-        Long contactNumber,
+        String contactNumber, // Changed to String
 
         @NotBlank(message = "Email must be provided")
         @Email(message = "Email must be valid")
-        String email,
-
-        @NotNull(message = "User ID must be provided")
-        Long userId
+        String email
 ) {
 }

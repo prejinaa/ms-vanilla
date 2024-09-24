@@ -5,10 +5,11 @@ public record MerchantWithAccountResponse(
         Long merchantId,
         String businessName,
         String businessAddress,
-        Long contactNumber,
+        String contactNumber,
         String email,
-        Long userId,
         LocalDateTime createDate,
         LocalDateTime lastModified,
+        Integer createdBy,
+        Integer lastModifiedBy,
         java.util.List<AccountResponse> accountResponse) {
 }

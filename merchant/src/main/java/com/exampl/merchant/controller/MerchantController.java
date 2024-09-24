@@ -50,13 +50,13 @@ public class MerchantController {
         return new ResponseEntity<>(merchantResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{userId}")
-    private ResponseEntity<List<MerchantWithAccountResponse>> getMerchantByUserID(@PathVariable Long userId) {
-        log.info("Received request to fetch merchants for user ID: {}", userId);
-        List<MerchantWithAccountResponse> merchantResponses = merchantService.getMerchantByUserID(userId);
-        log.info("Returning {} merchants for user ID: {}", merchantResponses.size(), userId);
-        return new ResponseEntity<>(merchantResponses, HttpStatus.OK);
-    }
+//    @GetMapping("/user/{userId}")
+//    private ResponseEntity<List<MerchantWithAccountResponse>> getMerchantByUserID(@PathVariable Long userId) {
+//        log.info("Received request to fetch merchants for user ID: {}", userId);
+//        List<MerchantWithAccountResponse> merchantResponses = merchantService.getMerchantByUserID(userId);
+//        log.info("Returning {} merchants for user ID: {}", merchantResponses.size(), userId);
+//        return new ResponseEntity<>(merchantResponses, HttpStatus.OK);
+//    }
     @DeleteMapping("{merchantId}")
     ResponseEntity<?> deleteAccount(@PathVariable Long merchantId) {
         log.info("Received request to delete merchant with Merchant ID: {}", merchantId);
