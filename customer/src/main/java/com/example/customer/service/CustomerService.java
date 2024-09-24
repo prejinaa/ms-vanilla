@@ -4,7 +4,6 @@ import com.example.customer.dto.CustomerRequest;
 import com.example.customer.dto.CustomerResponse;
 import com.example.customer.dto.CustomerResponseWithAccount;
 import com.example.customer.exception.CustomerNotFoundException;
-import com.example.customer.exception.CustomerNotFoundWithUser;
 import com.example.customer.model.Customer;
 import com.example.customer.repo.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class CustomerService {
                 customer.setContactNumber(customerRequest.contactNumber());
                 customer.setAddress(customerRequest.address());
                 customer.setEmail(customerRequest.email());
-                customer.setUserId(customerRequest.userId());
+
 
                 Customer saveCustomer=customerRepository.save(customer);
 
@@ -43,9 +42,10 @@ public class CustomerService {
                         saveCustomer.getContactNumber(),
                         saveCustomer.getAddress(),
                         saveCustomer.getEmail(),
-                        saveCustomer.getUserId(),
                         saveCustomer.getCreateDate(),
-                        saveCustomer.getLastModified());
+                        saveCustomer.getLastModified(),
+                        saveCustomer.getCreatedBy(),
+                        saveCustomer.getLastModifiedBy());
     }
 
     public List<CustomerResponse> getAllCustomer(){
@@ -79,9 +79,10 @@ public class CustomerService {
                 customer.getContactNumber(),
                 customer.getAddress(),
                 customer.getEmail(),
-                customer.getUserId(),
                 customer.getCreateDate(),
                 customer.getLastModified(),
+                customer.getCreatedBy(),
+                customer.getLastModifiedBy(),
                 accountResponse
         );
     }
@@ -98,7 +99,6 @@ public class CustomerService {
         customer.setContactNumber(customerRequest.contactNumber());
         customer.setAddress(customerRequest.address());
         customer.setEmail(customerRequest.email());
-        customer.setUserId(customerRequest.userId());
 
         Customer updateCustomer=customerRepository.save(customer);
         log.info("Customer updated with Id:{}",updateCustomer.getCustomerId());
@@ -109,51 +109,55 @@ public class CustomerService {
                 updateCustomer.getContactNumber(),
                 updateCustomer.getAddress(),
                 updateCustomer.getEmail(),
-                updateCustomer.getUserId(),
                 updateCustomer.getCreateDate(),
-                updateCustomer.getLastModified());
+                updateCustomer.getLastModified(),
+                updateCustomer.getCreatedBy(),
+                updateCustomer.getLastModifiedBy()
+        );
 
 
 
     }
-    public List<CustomerResponseWithAccount> getCustomerByUserId(Long userId) throws CustomerNotFoundWithUser {
-
-        log.info("Fetching Customer for user ID: {}", userId);
-        List<Customer>customers=customerRepository.findByUserId(userId);
-
-        if (customers.isEmpty()) {
-            log.error("No customer found for user ID: {}", userId);
-            throw new CustomerNotFoundWithUser(userId );
-        }
-
-        return customers.stream()
-                .map(customer -> {
-                    log.info("Fetching accounts for customer ID: {}", customer.getCustomerId());
-                    List<AccountResponse> accountResponses = webClient.get()
-                            .uri("http://localhost:8083/api/accounts/customer/" + customer.getCustomerId())
-                            .retrieve()
-                            .bodyToMono(new ParameterizedTypeReference<List<AccountResponse>>() {})
-                            .onErrorResume(e -> {
-                                log.error("Error fetching accounts for customer ID: {}: {}", customer.getCustomerId(), e.getMessage());
-                                return Mono.empty();
-                            })
-                            .block();
-
-                    return new CustomerResponseWithAccount(
-                            customer.getCustomerId(),
-                            customer.getName(),
-                            customer.getContactNumber(),
-                            customer.getAddress(),
-                            customer.getEmail(),
-                            customer.getUserId(),
-                            customer.getCreateDate(),
-                            customer.getLastModified(),
-                            accountResponses);
-
-
-                })
-                .collect(Collectors.toList());
-    }
+//    public List<CustomerResponseWithAccount> getCustomerByUserId(Long userId) throws CustomerNotFoundWithUser {
+//
+//        log.info("Fetching Customer for user ID: {}", userId);
+//        List<Customer>customers=customerRepository.findByUserId(userId);
+//
+//        if (customers.isEmpty()) {
+//            log.error("No customer found for user ID: {}", userId);
+//            throw new CustomerNotFoundWithUser(userId );
+//        }
+//
+//        return customers.stream()
+//                .map(customer -> {
+//                    log.info("Fetching accounts for customer ID: {}", customer.getCustomerId());
+//                    List<AccountResponse> accountResponses = webClient.get()
+//                            .uri("http://localhost:8083/api/accounts/customer/" + customer.getCustomerId())
+//                            .retrieve()
+//                            .bodyToMono(new ParameterizedTypeReference<List<AccountResponse>>() {})
+//                            .onErrorResume(e -> {
+//                                log.error("Error fetching accounts for customer ID: {}: {}", customer.getCustomerId(), e.getMessage());
+//                                return Mono.empty();
+//                            })
+//                            .block();
+//
+//                    return new CustomerResponseWithAccount(
+//                            customer.getCustomerId(),
+//                            customer.getName(),
+//                            customer.getContactNumber(),
+//                            customer.getAddress(),
+//                            customer.getEmail(),
+//                            customer.getUserId(),
+//                            customer.getCreateDate(),
+//                            customer.getLastModified(),
+//                            customer.getCreatedBy(),
+//                            customer.getLastModifiedBy(),
+//                            accountResponses);
+//
+//
+//                })
+//                .collect(Collectors.toList());
+//    }
 
     public void deleteCustomer(Long customerId){
         log.info("Received request to delete Customer with Customer ID: {}", customerId);

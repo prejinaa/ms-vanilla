@@ -17,10 +17,8 @@ public record CustomerRequest(
 
         @NotBlank(message = "Email must be provided")
         @Email(message = "Email must be valid")
-        String email,
+        String email
 
-        @NotNull(message = "User ID must be provided")
-        Long userId
         )
            {
              }

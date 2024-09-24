@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer,Long> {
 
-    @Query("SELECT c FROM Customer c WHERE c.userId = :userId")
-    List<Customer> findByUserId(Long userId);
+//    @Query("SELECT c FROM Customer c WHERE c.userId = :userId")
+//    List<Customer> findByUserId(Long userId);
     List<CustomerResponse>findAllBy();
 
 }

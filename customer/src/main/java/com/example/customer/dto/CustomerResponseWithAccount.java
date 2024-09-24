@@ -10,9 +10,10 @@ public record CustomerResponseWithAccount(
         Long contactNumber,
         String address,
         String email,
-        Long userId,
         LocalDateTime createDate,
         LocalDateTime lastModified,
+        Integer createdBy,
+        Integer lastModifiedBy,
         List<AccountResponse> accountResponse
 ) {
 }

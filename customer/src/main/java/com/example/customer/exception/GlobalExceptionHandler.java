@@ -23,16 +23,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(CustomerNotFoundWithUser.class)
-    public ResponseEntity<Object> handleCustomerNotFoundWithUser(CustomerNotFoundWithUser exception) {
-
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("timestamp", LocalDateTime.now());
-        responseBody.put("status", HttpStatus.NOT_FOUND.value());
-        responseBody.put("error", "Customer Not Found");
-        responseBody.put("message", exception.getMessage());
-        responseBody.put("customer", exception.getUserId());
-        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
-    }
+//    @ExceptionHandler(CustomerNotFoundWithUser.class)
+//    public ResponseEntity<Object> handleCustomerNotFoundWithUser(CustomerNotFoundWithUser exception) {
+//
+//        Map<String, Object> responseBody = new HashMap<>();
+//        responseBody.put("timestamp", LocalDateTime.now());
+//        responseBody.put("status", HttpStatus.NOT_FOUND.value());
+//        responseBody.put("error", "Customer Not Found");
+//        responseBody.put("message", exception.getMessage());
+//        responseBody.put("customer", exception.getUserId());
+//        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+//    }
 }
 
