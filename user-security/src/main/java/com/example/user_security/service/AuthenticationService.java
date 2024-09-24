@@ -1,6 +1,5 @@
 package com.example.user_security.service;
 
-
 import com.example.user_security.config.JwtService;
 import com.example.user_security.dto.*;
 import com.example.user_security.model.Role;
@@ -11,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -37,11 +37,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.MERCHANT)
                 .build();
-
-        // save user to db
         repository.save(user);
-
-
         var jwtToken = jwtService.generateToken(user);
 
         return AuthResponse.builder()
@@ -56,30 +52,65 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-
-        // find user from db
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new Exception("Invalid user"));
 
-        // generate new token
         var jwtToken = jwtService.generateToken(user);
 
         return AuthResponse.builder()
                 .token(jwtToken)
                 .build();
     }
+    public UserResponse getCurrentUser(Authentication authentication) {
+        Integer userId = ((User) authentication.getPrincipal()).getId(); // Assuming User has a method getId()
+        String username = ((User) authentication.getPrincipal()).getEmail(); // Assuming email as username
 
-
-    public List<MerchantResponse> MerchantController() {
-        return webClient.get()
-                .uri("http://localhost:8084/api/merchant}")
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<MerchantResponse>>() {})
-                .onErrorResume(e -> {
-                    log.error("Error fetching merchant for user ID");
-                    return Mono.empty();
-                })
-                .block();
+        return new UserResponse(userId, username);
     }
+
+
+public Mono<List<MerchantResponse>> getAllMerchants(String jwtToken) {
+    return webClient.get()
+            .uri("http://localhost:8084/api/merchant")
+            .header("Authorization", "Bearer " + jwtToken)  // Include JWT token
+            .retrieve()
+            .bodyToMono(new ParameterizedTypeReference<List<MerchantResponse>>() {})
+            .onErrorResume(e -> {
+                // Handle errors
+                return Mono.empty();
+            });
+}
+
+
+
+    public Mono<MerchantResponse> createMerchant(MerchantRequest merchantRequest, String jwtToken) {
+        return webClient.post()
+                .uri("http://localhost:8084/api/merchant")
+                .header("Authorization", "Bearer " + jwtToken)
+                .bodyValue(merchantRequest)
+                .retrieve()
+                .bodyToMono(MerchantResponse.class)
+                .onErrorResume(e -> {
+                    return Mono.empty();
+                });
+    }
+
+    public Mono<MerchantWithAccountResponse> getMerchantById(Long merchantId,String jwtToken) {
+        return webClient.get()
+                .uri("http://localhost:8084/api/merchant/{merchantId}", merchantId)
+                .header("Authorization", "Bearer " + jwtToken)
+                .retrieve()
+                .bodyToMono(MerchantWithAccountResponse.class)
+                .onErrorResume(e -> {
+                    // Handle errors
+                    return Mono.empty();
+                });
+    }
+
+    public String extractTokenFromAuthentication(Authentication authentication) {
+
+        return (String) authentication.getCredentials();
+    }
+
 
     }

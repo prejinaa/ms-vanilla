@@ -10,7 +10,6 @@ public record CustomerResponseWithAccount(
         Long contactNumber,
         String address,
         String email,
-        Long userId,
         LocalDateTime createDate,
         LocalDateTime lastModified,
         List<AccountResponse> accountResponse

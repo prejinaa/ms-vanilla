@@ -9,7 +9,6 @@ public record CustomerResponse(
         Long contactNumber,
         String address,
         String email,
-        Long userId,
         LocalDateTime createDate,
         LocalDateTime lastModified
 

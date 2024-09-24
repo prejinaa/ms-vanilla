@@ -1,4 +1,5 @@
 package com.example.user_security.config;
+
 import com.example.user_security.auditing.ApplicationAuditAware;
 import com.example.user_security.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class ApplicationConfig {
         };
 
     }
-        @Bean
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());

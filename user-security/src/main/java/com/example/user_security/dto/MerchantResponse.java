@@ -5,11 +5,12 @@ public record MerchantResponse(
         Long merchantId,
         String businessName,
         String businessAddress,
-        Long contactNumber,
+        String contactNumber,
         String email,
-        Long userId,
         LocalDateTime createDate,
-        LocalDateTime lastModified
+        LocalDateTime lastModified,
+        Integer createdBy,
+        Integer lastModifiedBy
 
 ) {
 }
