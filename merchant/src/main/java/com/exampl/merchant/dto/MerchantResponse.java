@@ -9,8 +9,6 @@ public record MerchantResponse(
         String email,
         LocalDateTime createDate,
         LocalDateTime lastModified,
-        Integer createdBy,
-        Integer lastModifiedBy
-
+        Integer createdBy
 ) {
 }

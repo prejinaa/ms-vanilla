@@ -10,6 +10,5 @@ public record MerchantWithAccountResponse(
         LocalDateTime createDate,
         LocalDateTime lastModified,
         Integer createdBy,
-        Integer lastModifiedBy,
         java.util.List<AccountResponse> accountResponse) {
 }

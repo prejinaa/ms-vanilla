@@ -1,19 +1,18 @@
 package com.exampl.merchant.service;
-import com.exampl.merchant.dto.AccountResponse;
-import com.exampl.merchant.dto.MerchantRequest;
-import com.exampl.merchant.dto.MerchantResponse;
-import com.exampl.merchant.dto.MerchantWithAccountResponse;
+import com.exampl.merchant.dto.*;
 import com.exampl.merchant.exception.MerchantNotFound;
 import com.exampl.merchant.model.Merchant;
 import com.exampl.merchant.repository.MerchantRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,30 +31,31 @@ public class MerchantService {
     }
 
     public MerchantResponse createMerchant(MerchantRequest merchantRequest) {
+
+
         log.info("Creating a new merchant with business name: {}", merchantRequest.businessName());
+
         Merchant merchant = new Merchant();
         merchant.setBusinessName(merchantRequest.businessName());
         merchant.setBusinessAddress(merchantRequest.businessAddress());
         merchant.setContactNumber(merchantRequest.contactNumber());
         merchant.setEmail(merchantRequest.email());
-
+        merchant.setCreatedBy(merchantRequest.createdBy());
 
         Merchant savedMerchant = merchantRepository.save(merchant);
-        log.info("Merchant created with ID: {}", savedMerchant.getMerchantId());
-
         return new MerchantResponse(
                 savedMerchant.getMerchantId(),
                 savedMerchant.getBusinessName(),
                 savedMerchant.getBusinessAddress(),
                 savedMerchant.getContactNumber(),
                 savedMerchant.getEmail(),
-
                 savedMerchant.getCreateDate(),
                 savedMerchant.getLastModified(),
-                savedMerchant.getCreatedBy(),
-                savedMerchant.getLastModifiedBy()
-        );
+                savedMerchant.getCreatedBy());
+
+
     }
+
 
     public MerchantWithAccountResponse getMerchantById(Long merchantId) throws MerchantNotFound {
         log.info("Fetching merchant by ID: {}", merchantId);
@@ -69,7 +69,8 @@ public class MerchantService {
         List<AccountResponse> accountResponse = webClient.get()
                 .uri("http://localhost:8083/api/accounts/merchant/" + merchantId)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<AccountResponse>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<AccountResponse>>() {
+                })
                 .onErrorResume(e -> {
                     log.error("Error fetching accounts for merchant ID: {}: {}", merchantId, e.getMessage());
                     return Mono.empty();
@@ -87,7 +88,6 @@ public class MerchantService {
                 merchant.getCreateDate(),
                 merchant.getLastModified(),
                 merchant.getCreatedBy(),
-                merchant.getLastModifiedBy(),
                 accountResponse
         );
     }
@@ -117,50 +117,13 @@ public class MerchantService {
                 updatedMerchant.getEmail(),
                 updatedMerchant.getCreateDate(),
                 updatedMerchant.getLastModified(),
-                updatedMerchant.getCreatedBy(),
-                updatedMerchant.getLastModifiedBy()
+                updatedMerchant.getCreatedBy()
+
         );
     }
 
-//    public List<MerchantWithAccountResponse> getMerchantByUserID(Long userId) {
-//        log.info("Fetching merchants for user ID: {}", userId);
-//        List<Merchant> merchants = merchantRepository.findByUserId(userId);
-//
-//        if (merchants.isEmpty()) {
-//            log.error("No merchants found for user ID: {}", userId);
-//            throw new RuntimeException("No merchants found for userId: " + userId);
-//        }
-//
-//        return merchants.stream()
-//                .map(merchant -> {
-//                    log.info("Fetching accounts for merchant ID: {}", merchant.getMerchantId());
-//                    List<AccountResponse> accountResponses = webClient.get()
-//                            .uri("http://localhost:8083/api/accounts/merchant/" + merchant.getMerchantId())
-//                            .retrieve()
-//                            .bodyToMono(new ParameterizedTypeReference<List<AccountResponse>>() {})
-//                            .onErrorResume(e -> {
-//                                log.error("Error fetching accounts for merchant ID: {}: {}", merchant.getMerchantId(), e.getMessage());
-//                                return Mono.empty();
-//                            })
-//                            .block();
-//
-//                    return new MerchantWithAccountResponse(
-//                            merchant.getMerchantId(),
-//                            merchant.getBusinessName(),
-//                            merchant.getBusinessAddress(),
-//                            merchant.getContactNumber(),
-//                            merchant.getEmail(),
-//                            merchant.getUserId(),
-//                            merchant.getCreateDate(),
-//                            merchant.getLastModified(),
-//                            merchant.getCreatedBy(),
-//                            merchant.getLastModifiedBy(),
-//                            accountResponses
-//                    );
-//                })
-//                .collect(Collectors.toList());
-//    }
-    public void deleteMerchant(Long merchantId){
+
+    public void deleteMerchant(Long merchantId) {
         log.info("Received request to delete Merchant with Merchant ID: {}", merchantId);
 
         if (!merchantRepository.existsById(merchantId)) {

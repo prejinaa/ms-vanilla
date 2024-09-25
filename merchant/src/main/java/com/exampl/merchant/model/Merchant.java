@@ -51,9 +51,9 @@ public class Merchant  {
     )
     private Integer createdBy;
 
-    @LastModifiedBy
-    @Column(insertable = false)
-    private Integer lastModifiedBy;
+//    @LastModifiedBy
+//    @Column(insertable = false)
+//    private Integer lastModifiedBy;
 
 
 
