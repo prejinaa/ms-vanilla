@@ -61,12 +61,6 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
-    public UserResponse getCurrentUser(Authentication authentication) {
-        Integer userId = ((User) authentication.getPrincipal()).getId(); // Assuming User has a method getId()
-        String username = ((User) authentication.getPrincipal()).getEmail(); // Assuming email as username
-
-        return new UserResponse(userId, username);
-    }
 
 
 public Mono<List<MerchantResponse>> getAllMerchants(String jwtToken) {
@@ -84,7 +78,7 @@ public Mono<List<MerchantResponse>> getAllMerchants(String jwtToken) {
 
 
     public Mono<MerchantResponse> createMerchant(MerchantRequest merchantRequest, String jwtToken) {
-        return webClient.post()
+        Mono<MerchantResponse> merchantResponseMono=    webClient.post()
                 .uri("http://localhost:8084/api/merchant")
                 .header("Authorization", "Bearer " + jwtToken)
                 .bodyValue(merchantRequest)
@@ -93,6 +87,7 @@ public Mono<List<MerchantResponse>> getAllMerchants(String jwtToken) {
                 .onErrorResume(e -> {
                     return Mono.empty();
                 });
+        return merchantResponseMono;
     }
 
     public Mono<MerchantWithAccountResponse> getMerchantById(Long merchantId,String jwtToken) {
@@ -106,6 +101,7 @@ public Mono<List<MerchantResponse>> getAllMerchants(String jwtToken) {
                     return Mono.empty();
                 });
     }
+
 
     public String extractTokenFromAuthentication(Authentication authentication) {
 

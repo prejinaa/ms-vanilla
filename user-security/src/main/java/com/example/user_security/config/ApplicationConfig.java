@@ -1,6 +1,5 @@
 package com.example.user_security.config;
 
-import com.example.user_security.auditing.ApplicationAuditAware;
 import com.example.user_security.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +48,5 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuditorAware<Integer> auditorAware() {
-        return new ApplicationAuditAware();
-    }
 }
 

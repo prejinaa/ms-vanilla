@@ -3,6 +3,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,10 +24,11 @@ public class SecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/user/**").permitAll()
-               .requestMatchers("/api/merchant/**").hasAnyRole("MERCHANT")
-
-                .anyRequest().authenticated() // Other requests need authentication
+                .requestMatchers("/api/user/current/id").authenticated() // Requires MERCHANT role
+                .requestMatchers("/api/user/merchants").authenticated()// Also requires MERCHANT role
+                .requestMatchers("/api/user/**").permitAll() // Allow other user endpoints without auth
+                .requestMatchers("/api/merchant/**").hasAnyRole("MERCHANT") // Ensure merchant endpoints are secured
+                .anyRequest().authenticated() // All other requests require authentication
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

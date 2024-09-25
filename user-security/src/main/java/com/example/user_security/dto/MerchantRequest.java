@@ -17,6 +17,9 @@ public record MerchantRequest(
 
         @NotBlank(message = "Email must be provided")
         @Email(message = "Email must be valid")
-        String email
+        String email,
+
+        Integer createdBy
+
 ) {
 }
